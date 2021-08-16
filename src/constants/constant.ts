@@ -5,3 +5,4 @@ export enum ACCESS_LEVELS {
   CREATE = "CREATE",
   DELETE = "DELETE",
 }
+export const WAIT_TIME: number = 3; //in seconds

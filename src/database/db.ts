@@ -4,6 +4,9 @@ import ActionType from "../models/ActionType";
 import Resource from "../models/Resource";
 import { ACCESS_LEVELS } from "../constants/constant";
 
+/**
+ * Class to handle data storage in memory
+ */
 export default class Database {
   users: User[] = []; //store all users here
   roles: Role[] = []; //store all roles here
@@ -34,7 +37,7 @@ export default class Database {
     });
     this.actionTypes.push(...Object.values(allActions));
 
-    // create test roles
+    // create test roles and assign respective actions to roles
     const reader = new Role("reader", [
       allActions["READ_RES1"],
       allActions["READ_RES2"],
@@ -67,6 +70,9 @@ export default class Database {
     this.setAdminUser();
   };
 
+  /**
+   * create Admin User
+   */
   setAdminUser = () => {
     const adminRole = new Role("admin", this.actionTypes); // user can access all resources anyways
     this.roles.push(adminRole);
@@ -74,7 +80,10 @@ export default class Database {
     this.users.push(adminUser);
     this.currentUser = adminUser;
   };
-
+  /**
+   *
+   * @returns User : Returns currently set user
+   */
   getCurrentUser = (): User => {
     return this.currentUser;
   };

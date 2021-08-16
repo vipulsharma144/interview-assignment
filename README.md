@@ -52,11 +52,9 @@ In the _interview-assignment_ folder execute
 npm start
 ```
 
-## files
-
 ## Assumptions
 
-- Roles and Resources are initialized and need not be modified in the program in run time.
+- Roles and Resources are initialized and cannot be modified/created in the program in run time.
 
 - The password is store in simple raw text but can be hashed using library like bcrypt.
 
@@ -67,6 +65,8 @@ npm start
 - Only admin can create users and assign/unassign roles
 
 - Name of Role, action_type and resource has to be **unique** .
+
+- To change resources or init data change the database/db.ts file
 
 ## Demo
 

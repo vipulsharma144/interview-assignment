@@ -9,7 +9,7 @@ import Role from "./models/Role";
 import User from "./models/User";
 import ActionType from "./models/ActionType";
 import Resource from "./models/Resource";
-import { ACCESS_LEVELS } from "./constants/constant";
+import { ACCESS_LEVELS, WAIT_TIME } from "./constants/constant";
 import chalk from "chalk";
 import Database from "./database/db";
 // imports ends
@@ -30,10 +30,10 @@ let currentUser: User = db.getCurrentUser(); // get the init current user i.e ad
  * Restarts the CLI menu after waiting for some seconds.(Helps to display info before clearing the console)
  */
 const restart = () => {
-  console.log(chalk.green("Restarting in 3 Seconds ..."));
+  console.log(chalk.green(`Restarting in ${WAIT_TIME} Seconds ...`));
   setTimeout(() => {
     main();
-  }, 3000);
+  }, WAIT_TIME * 1000);
 };
 
 /**
@@ -137,10 +137,16 @@ const main = async () => {
     restart();
   } else if (selectedOption.id == 2) {
     // Assign role to user
+    console.log(chalk.green("Select User to assign role to "));
     const selectedUser = await cli.listUsersPrompt(users).catch((e) => {
       restart();
     });
     if (selectedUser) {
+      clear();
+      console.log(
+        chalk.green("Select Role to assign to "),
+        selectedUser.value.name
+      );
       const selectedRole = await cli.listRolesPrompt(roles).catch((e) => {
         restart();
       });
@@ -157,6 +163,7 @@ const main = async () => {
     }
   } else if (selectedOption.id == 3) {
     // Remove role of user
+    console.log(chalk.green("Select User to remove role of "));
     const selectedUser = await cli.listUsersPrompt(users).catch((e) => {
       restart();
     });
@@ -167,21 +174,27 @@ const main = async () => {
           chalk.red(" user has No roles assigned. ")
         );
         restart();
-      }
-      const selectedRole = await cli
-        .listRolesPrompt(selectedUser.value.roles)
-        .catch((e) => {
-          restart();
-        });
-      if (selectedRole && selectedRole.value) {
-        selectedUser.value.removeRole(selectedRole.value);
+      } else {
+        clear();
         console.log(
-          "Removed Role ",
-          selectedRole.value.name,
-          "from ",
-          selectedUser.value ? selectedUser.value.name : "User"
+          chalk.red("Select Role to remove from "),
+          selectedUser.value.name
         );
-        restart();
+        const selectedRole = await cli
+          .listRolesPrompt(selectedUser.value.roles)
+          .catch((e) => {
+            restart();
+          });
+        if (selectedRole && selectedRole.value) {
+          selectedUser.value.removeRole(selectedRole.value);
+          console.log(
+            "Removed Role ",
+            selectedRole.value.name,
+            "from ",
+            selectedUser.value ? selectedUser.value.name : "User"
+          );
+          restart();
+        }
       }
     }
   } else if (selectedOption.id == 4) {
@@ -192,7 +205,7 @@ const main = async () => {
     } else {
       console.log("You have following roles assigned to you");
       currentUser.roles.forEach((role: Role, i: number) => {
-        console.log(i, role.name);
+        console.log(i + 1, role.name);
       });
     }
 
@@ -237,8 +250,8 @@ const main = async () => {
     restart();
   } else if (selectedOption.id == 6) {
     console.log(chalk.red("You sure you want to Quit!"));
-    const sureQuit = await cli.getInput("y or n");
-    if (sureQuit == "y") {
+    const sureQuit = await cli.getInput("y or n ? -> ");
+    if (sureQuit.trim().toLowerCase() == "y") {
       console.log(chalk.red(quittingText));
       process.exit(0);
     } else {
