@@ -34,7 +34,7 @@ The system is init with:
 
 - 3 sample resources
 
-- Default **Password** of all users and Admin is **hello**
+- NOTE : Default **Password** of all users and Admin is **hello**
 
 ## Installation
 
@@ -44,7 +44,7 @@ cd interview-assignment
 npm install
 ```
 
-## Executing
+## Execution
 
 In the _interview-assignment_ folder execute
 
